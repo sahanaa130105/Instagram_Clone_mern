@@ -1,4 +1,5 @@
 import React from 'react'
+import defaultImg from '../../assets/default.png'
 
 export function Default() {
     return (

@@ -7,7 +7,7 @@ import { commentMore } from '../../assets/svgIcons'
 import { url } from '../../baseUrl';
 import { AuthContext } from '../../context/Auth';
 import { api } from '../../Interceptor/apiCall';
-import defaultImg from '../../assets/dafault.png'
+import defaultImg from '../../assets/default.png'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 
 export default function Comment({ text, time, userId, owner, postId, id, filterComment }) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import defaultImg from '../../assets/dafault.png'
+import defaultImg from '../../assets/default.png'
 import { url } from '../../baseUrl'
 import { AuthContext } from '../../context/Auth'
 import { api } from '../../Interceptor/apiCall'

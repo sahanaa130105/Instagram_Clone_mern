@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { moreIcons, commentIcon, emojiIcon, likeOutline, shareIcon, afterLike, saveHome, saveIconOutline } from "../../../assets/svgIcons";
 import { url } from "../../../baseUrl";
 import { api } from "../../../Interceptor/apiCall";
-import defaultImg from '../../../assets/dafault.png'
+import defaultImg from '../../../assets/default.png'
 import ReactTimeAgo from 'react-time-ago'
 import { AuthContext } from '../../../context/Auth'
 import "./card.css";

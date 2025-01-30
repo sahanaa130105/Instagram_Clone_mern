@@ -22,8 +22,15 @@ export const Chat = () => {
 
   useEffect(() => {
     api.get(`${url}/chat/getrooms`).then(res => {
-      setRooms(res.data)
-    }).catch(err => console.log(err))
+      if (res.data) {
+        setRooms(res.data);
+        console.log('Rooms fetched:', res.data); // Debug log
+      } else {
+        console.error('No data received'); // Debug log
+      }
+    }).catch(err => {
+      console.error('Error fetching rooms:', err); // Debug log
+    });
   }, [])
 
   useEffect(() => {

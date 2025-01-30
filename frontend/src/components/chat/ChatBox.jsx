@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react'
-import defaultImg from '../../assets/dafault.png'
+import defaultImg from '../../assets/default.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { emojiIcon, galleryIcon, likeOutline } from '../../assets/svgIcons';
 import { useEffect } from 'react';

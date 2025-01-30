@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import defaultImg from '../../assets/dafault.png'
+import defaultImg from '../../assets/default.png'
 import Checkbox from '@mui/material/Checkbox';
 
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';

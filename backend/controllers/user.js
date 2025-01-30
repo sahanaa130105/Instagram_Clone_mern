@@ -195,14 +195,36 @@ exports.search = async (req, res) => {
 // suggestions
 exports.suggestions = async (req, res) => {
   try {
-    const notFollowed = await User.find({
-      $and: [
-        { followers: { $ne: req.user._id } },
-        { _id: { $ne: req.user._id } }
-      ]
-    })
-      .limit(parseInt(req.query.limit ?? 5))
-    res.send(notFollowed)
+    // Find users not followed by current user
+    const notFollowed = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { followers: { $ne: req.user._id } },
+            { _id: { $ne: req.user._id } }
+          ]
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          username: 1,
+          name: 1,
+          avatar: 1,
+          followers: 1,
+          followersCount: { $size: "$followers" },
+          bio: 1
+        }
+      },
+      {
+        $sort: { followersCount: -1 }
+      },
+      {
+        $limit: parseInt(req.query.limit ?? 5)
+      }
+    ]);
+
+    res.send(notFollowed);
   } catch (err) {
     res.status(400).send({
       success: false,

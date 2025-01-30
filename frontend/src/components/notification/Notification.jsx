@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { url } from '../../baseUrl'
 import { api } from '../../Interceptor/apiCall'
 import ReactTimeAgo from 'react-time-ago'
-import defaultImg from '../../assets/dafault.png'
+import defaultImg from '../../assets/default.png'
 import { Link } from 'react-router-dom'
 import { io } from 'socket.io-client'
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import defaultImg from '../../assets/dafault.png'
+import defaultImg from '../../assets/default.png'
 import { url } from '../../baseUrl'
 import type from '../../assets/typing.gif'
 import { api } from '../../Interceptor/apiCall'

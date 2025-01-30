@@ -2,7 +2,7 @@ import React from 'react'
 import { useContext } from 'react'
 import { UserCard } from './UserCard'
 import { AuthContext } from '../../../context/Auth'
-import defaultImg from '../../../assets/dafault.png'
+import defaultImg from '../../../assets/default.png'
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
 import { api } from '../../../Interceptor/apiCall'
@@ -123,7 +123,14 @@ export default function Right() {
                 <div className="allusers" style={{ display: 'flex', alignItems: 'center', marginTop: '22px', flexDirection: 'column' }}>
                     {
                         suggestedUsers.map(user => {
-                            return <UserCard key={user._id} userId={user._id} avatar={user.avatar} username={user.username} name={user.name} />
+                            return <UserCard 
+                                key={user._id} 
+                                userId={user._id} 
+                                avatar={user.avatar} 
+                                username={user.username} 
+                                name={user.name}
+                                followersCount={user.followersCount}
+                            />
                         })
                     }
                 </div>

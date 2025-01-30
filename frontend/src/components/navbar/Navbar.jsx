@@ -16,7 +16,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/Auth";
 import { url } from "../../baseUrl";
 import { api } from "../../Interceptor/apiCall";
-import defaultImg from '../../assets/dafault.png'
+import defaultImg from '../../assets/default.png'
 import { NotificationBox } from "../dialog/NotificationBox";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from '../../firebase';
@@ -289,10 +289,7 @@ export const Navbar = ({ active }) => {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
             <MenuItem style={{ fontSize: '13px', fontFamily: 'Poppins' }}>
-              <Link to={`/${context.auth.username}`} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
-                {profileIcon}
-                <span style={{ marginLeft: '12px' }}>Profile</span>
-              </Link>
+              <Link to={`/${context.auth.username}`} style={{ textDecoration: 'none', color: 'black' }}>Profile</Link>
             </MenuItem>
             <MenuItem style={{ fontSize: '13px', fontFamily: 'Poppins' }}>
               <Link to="/saved/thenisab" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
