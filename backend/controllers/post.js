@@ -317,18 +317,22 @@ exports.savedPosts = async (req, res) => {
 exports.homePosts = async (req, res) => {
   try {
     const userId = req.user._id;
-    const posts = await Post.find({ owner: userId });
     const user = await User.findOne({ _id: userId });
-    Promise.all(
-      user.followings.map(async (item) => {
-        posts.push(...(await Post.find({ owner: item })));
+    
+    // Get all posts from user and followings in a single query
+    const posts = await Post.find({
+      owner: { $in: [userId, ...user.followings] }
+    }).populate('owner', 'username avatar')
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'username avatar'
+        }
       })
-    ).then(() => {
-      const arr = posts.sort((a, b) => {
-        return b.createdAt - a.createdAt;
-      });
-      res.send(arr);
-    });
+      .sort({ createdAt: -1 });
+
+    res.send(posts);
   } catch (err) {
     res.send({
       success: false,
