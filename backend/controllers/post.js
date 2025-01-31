@@ -21,17 +21,36 @@ exports.getPost = async (req, res) => {
 
 exports.createPost = async (req, res) => {
   try {
-    const post = new Post({ ...req.body, owner: req.user._id });
+    if (!req.file) {
+      return res.status(400).send({
+        success: false,
+        message: "No image provided"
+      });
+    }
+
+    const postData = {
+      caption: req.body.caption,
+      owner: req.user._id,
+      files: [{
+        fileType: 'image',
+        link: `/uploads/${req.file.filename}`
+      }]
+    };
+
+    const post = new Post(postData);
     const saved = await post.save();
+    
     await User.updateOne(
       { _id: req.user._id },
       { $push: { posts: saved._id } }
     );
+    
     res.send(saved);
   } catch (err) {
-    res.send({
+    console.error('Create post error:', err);
+    res.status(500).send({
       success: false,
-      message: err.message,
+      message: err.message
     });
   }
 };

@@ -8,14 +8,38 @@ const ResetTokens = require('../models/ResetTokens')
 exports.getUser = async (req, res) => {
   try {
     const { username } = req.params;
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username })
+      .populate('followers', 'username name avatar')
+      .populate('followings', 'username name avatar')
+      .populate({
+        path: 'posts',
+        select: '_id caption files likes comments',
+        populate: {
+          path: 'comments',
+          select: 'comment user createdAt',
+          populate: {
+            path: 'user',
+            select: 'username avatar'
+          }
+        }
+      });
+
     if (!user) {
       return res.send({
         success: false,
         message: "No user found",
       });
     }
-    res.send(user);
+
+    // Format the response to include counts
+    const userResponse = {
+      ...user.toObject(),
+      followersCount: user.followers.length,
+      followingsCount: user.followings.length,
+      postsCount: user.posts.length
+    };
+
+    res.send(userResponse);
   } catch (err) {
     res.send({
       success: false,
@@ -159,17 +183,62 @@ exports.notications = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const user = req.user._id;
-    const findUser = await User.findOne({ _id: user });
-    res.send(
-      await User.updateOne(
-        { _id: user },
-        { $set: { ...{ ...findUser }._doc, ...req.body } }
-      )
-    );
+    const { name, bio } = req.body;
+    const updateData = {
+      name: name || '',
+      bio: bio || ''
+    };
+
+    // Handle file upload if present
+    if (req.file) {
+      updateData.avatar = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: user },
+      { $set: updateData },
+      { new: true, runValidators: true }
+    )
+    .select('-password')
+    .populate('followers', 'username name avatar')
+    .populate('followings', 'username name avatar')
+    .populate({
+      path: 'posts',
+      select: '_id caption files likes comments',
+      populate: {
+        path: 'comments',
+        select: 'text user',
+        populate: {
+          path: 'user',
+          select: 'username avatar'
+        }
+      }
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Format the response to include counts
+    const userResponse = {
+      ...updatedUser.toObject(),
+      followersCount: updatedUser.followers.length,
+      followingsCount: updatedUser.followings.length,
+      postsCount: updatedUser.posts.length
+    };
+
+    res.json({
+      success: true,
+      user: userResponse
+    });
   } catch (err) {
-    res.send({
+    console.error('Update user error:', err);
+    res.status(500).json({
       success: false,
-      message: err.message,
+      message: err.message || "Failed to update profile"
     });
   }
 };

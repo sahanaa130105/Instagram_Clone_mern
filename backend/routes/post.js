@@ -1,11 +1,12 @@
 const { isAuthenticated } = require("../middlewares/auth");
 const { createPost, updatePost, likesHandle, addComment, deleteComment, save, updateComment, deletePost, getPost, userPosts, explore, savedPosts, homePosts } = require("../controllers/post");
+const upload = require("../middlewares/upload");
 
 const router = require("express").Router();
 
 router.route('/:postId').get(getPost)
 
-router.route("/create").post(isAuthenticated, createPost);
+router.route("/create").post(isAuthenticated, upload.single('image'), createPost);
 
 router.route("/update/:postId").put(isAuthenticated, updatePost);
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./navbar.css";
 import logo from "./logo.png";
 import Search from "./Search";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { exploreFill, homeFill, messageFill, messageOutline, profileIcon, savedIcon, settingsIcon, switchAccountIcon } from "../../assets/svgIcons";
 import { exploreOutline } from "../../assets/svgIcons";
 import { postUploadOutline } from "../../assets/svgIcons";
@@ -24,6 +24,7 @@ import { storage } from '../../firebase';
 
 export const Navbar = ({ active }) => {
 
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [imgurl, setImgurl] = useState('')
   const context = useContext(AuthContext)
@@ -288,8 +289,14 @@ export const Navbar = ({ active }) => {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem style={{ fontSize: '13px', fontFamily: 'Poppins' }}>
-              <Link to={`/${context.auth.username}`} style={{ textDecoration: 'none', color: 'black' }}>Profile</Link>
+            <MenuItem 
+              onClick={() => {
+                navigate(`/${context.auth.username}`);
+                handleClose();
+              }}
+              style={{ fontSize: '13px', fontFamily: 'Poppins' }}
+            >
+              Profile
             </MenuItem>
             <MenuItem style={{ fontSize: '13px', fontFamily: 'Poppins' }}>
               <Link to="/saved/thenisab" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '100%' }}>

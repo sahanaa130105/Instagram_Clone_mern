@@ -19,6 +19,7 @@ import { url } from "./baseUrl";
 import io from "socket.io-client";
 import { Password } from "./pages/Password";
 import AuthRedirect from "./pages/AuthRedirect";
+import EditProfile from './pages/EditProfile';
 
 export const socket = io(url);
 
@@ -179,6 +180,7 @@ function App() {
               </Private>
             }
           />
+          <Route path="/accounts/edit" element={<Private><EditProfile /></Private>} />
         </Routes>
       </div>
     </AuthContext.Provider>

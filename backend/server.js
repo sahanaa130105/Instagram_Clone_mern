@@ -28,7 +28,10 @@ app.use("/user", userRoute);
 app.use("/chat", chatRoute);
 app.use("/story", storyRoute);
 
-app.get("/test", (req, res) => {
+// Serve static files from the uploads directory
+app.use('/uploads', express.static('uploads'));
+
+app.use("/test", (req, res) => {
   res.send("Hello from other side");
 });
 

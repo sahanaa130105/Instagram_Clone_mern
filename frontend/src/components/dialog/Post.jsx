@@ -14,6 +14,17 @@ import { AuthContext } from '../../context/Auth'
 import { Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import Emoji from '../emoji/Emoji'
 
+const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    return `${url}${path}`;
+};
+
+const getPostImage = (post) => {
+    if (!post.files || post.files.length === 0) return null;
+    const imageFile = post.files.find(file => file.fileType === 'image');
+    return imageFile ? getImageUrl(imageFile.link) : null;
+};
 
 export const Post = ({ postId, userId, filterPosts, setOpenDilaog }) => {
     const context = useContext(AuthContext)
@@ -31,7 +42,6 @@ export const Post = ({ postId, userId, filterPosts, setOpenDilaog }) => {
     const [iFollow, setIFollow] = useState(false)
     const [showEmojiPicker, setEmojiPicker] = useState(false)
     const [captionMoreDialog, setCaptionMoreDialog] = useState(false)
-
 
     useEffect(() => {
         api.get(`${url}/user/get/${userId}`).then(res => {
@@ -155,7 +165,7 @@ export const Post = ({ postId, userId, filterPosts, setOpenDilaog }) => {
     return (
         <div style={{ height: '100vh', display: 'flex', flexDirection: 'row', overflow: 'hidden', justifyContent: 'space-between' }}>
             <div className="left-dialog" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: 'auto' }}>
-                <img style={{ width: '90%', margin: 'auto', objectFit: 'contain' }} src={post && post.files[0].link} alt="" />
+                <img style={{ width: '90%', margin: 'auto', objectFit: 'contain' }} src={getPostImage(post)} alt="" />
             </div>
             <div className="right-dialog" style={{ minWidth: '460px', overflowY: 'scroll', borderLeft: '2px solid rgb(231 231 231)', padding: '10px 0px', display: 'flex', flexDirection: 'column' }} onClick={() => setEmojiPicker(false)}>
                 <div className="user-post-details" style={{ marginBottom: '7px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #dbdbdb', paddingBottom: '5px', paddingTop: '1.25px' }}>
