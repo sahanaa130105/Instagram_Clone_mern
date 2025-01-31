@@ -84,23 +84,51 @@ exports.addSeen = async (req, res) => {
 
 exports.homeStory = async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.user._id });
-    const allStories = [];
-    Promise.all(
-      user.followings.map(async (item) => {
-        const t = await Story.find({
-          $and: [
-            { owner: item },
-            { createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
-          ],
-        });
-        if (t.length != 0) allStories.push(t);
-      })
-    ).then(() => {
-      res.send(allStories);
+    const userId = req.user._id;
+    const user = await User.findOne({ _id: userId });
+    
+    // Get current user's stories
+    const userStories = await Story.find({
+      owner: userId,
+      createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+    }).populate('owner', 'username avatar');
+
+    // Get stories from followings
+    const followingStories = await Story.find({
+      owner: { $in: user.followings },
+      createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+    }).populate('owner', 'username avatar');
+
+    // Group stories by owner
+    const storiesByOwner = new Map();
+    
+    // Add user's own stories if they exist
+    if (userStories.length > 0) {
+      storiesByOwner.set(userId.toString(), userStories);
+    }
+
+    // Add following's stories
+    followingStories.forEach(story => {
+      const ownerId = story.owner._id.toString();
+      if (!storiesByOwner.has(ownerId)) {
+        storiesByOwner.set(ownerId, []);
+      }
+      storiesByOwner.get(ownerId).push(story);
     });
+
+    // Convert map to array and sort by latest story
+    const allStories = Array.from(storiesByOwner.values())
+      .sort((a, b) => {
+        const latestA = Math.max(...a.map(s => new Date(s.createdAt)));
+        const latestB = Math.max(...b.map(s => new Date(s.createdAt)));
+        return latestB - latestA;
+      });
+
+    console.log('Sending stories:', allStories);
+    res.send(allStories);
   } catch (err) {
-    res.status(400).send({
+    console.error('Error in homeStory:', err);
+    res.status(500).send({
       success: false,
       message: err.message,
     });
